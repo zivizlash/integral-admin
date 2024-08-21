@@ -41,12 +41,12 @@ export default function Page() {
         setStaticUser(currentUser);
         setUser(currentUser);
         setIsUpdated(true);
-      })
+      });
   }, [jwtToken]);
 
   const close = () => {
     setIsOpen(false);
-  }
+  };
 
   const onSubmit = (e: any) => {
     e.preventDefault();
@@ -68,7 +68,7 @@ export default function Page() {
           setPassword("");
         }
       });
-  }
+  };
 
   return (
     <div>
@@ -152,5 +152,5 @@ export default function Page() {
         </form>
       </div>
     </div>
-  )
+  );
 }

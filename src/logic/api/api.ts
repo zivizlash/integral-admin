@@ -1,7 +1,8 @@
 import axios from "axios";
 import { redirect, RedirectType } from "next/navigation";
-import { getAccessToken, getRefreshToken, 
-  setStorageTokens, isRefreshTokenAlreadyAccessed 
+import {
+  getAccessToken, getRefreshToken,
+  setStorageTokens, isRefreshTokenAlreadyAccessed
 } from "@/logic/state/tokenHelper";
 
 axios.defaults.baseURL = "http://127.0.0.1:80/api";
