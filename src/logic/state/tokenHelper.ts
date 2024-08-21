@@ -48,4 +48,5 @@ export function isRefreshTokenAlreadyAccessed(): boolean {
 export function setStorageTokens(access: string, refresh: string) {
   localStorage.setItem(accessTokenKey, access);
   localStorage.setItem(refreshTokenKey, refresh);
+  accessToken = access;
 }

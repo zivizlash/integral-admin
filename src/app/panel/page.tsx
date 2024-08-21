@@ -1,12 +1,11 @@
 "use client";
+import { userAtom } from "@/logic/api/atoms";
+import { useAtom } from "jotai";
 
-import { useUserContext } from "@/logic/state/authState";
-
-export default function Page()
-{
-  const userCtx = useUserContext();
+export default function Page() {
+  const [user] = useAtom(userAtom);
 
   return (
-    <h1>Hello, {userCtx.user?.login}!</h1>
+    <h1>Hello, {user?.login}! Your role is {user?.role}</h1>
   );
 }
