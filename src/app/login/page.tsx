@@ -3,7 +3,7 @@
 import clsx from 'clsx';
 import Image from 'next/image';
 import axios from "@/logic/api/api";
-import { Field, Input, Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
+import { Field, Input, Button, Dialog, DialogPanel, DialogTitle, DialogBackdrop } from '@headlessui/react'
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { setStorageTokens } from "@/logic/state/tokenHelper";
@@ -12,6 +12,7 @@ import { userAtom } from '@/logic/api/atoms';
 import { USERS_TOKEN, USERS_CURRENT } from '@/logic/api/endpoints';
 import { setStaticUser } from '@/logic/store/userStore';
 import { JwtTokens } from '@/logic/models/definition';
+import pic from "@/../public/Icon-Integral-256x.png";
 
 export default function Page() {
   const [login, setLogin] = useState("");
@@ -72,31 +73,6 @@ export default function Page() {
 
   return (
     <div>
-      <Dialog open={isOpen} as="div" className="relative z-10 focus:outline-none" onClose={close}>
-        <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-          <div className="flex min-h-full items-center justify-center p-4">
-            <DialogPanel
-              transition
-              className="w-full max-w-md rounded-xl bg-white/5 p-6 backdrop-blur-2xl duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0"
-            >
-              <DialogTitle as="h3" className="text-base/7 font-medium text-white">
-                Неверные данные авторизации
-              </DialogTitle>
-              <p className="mt-2 text-sm/6 text-white/50">
-                Пароль и/или логин неправильны.
-              </p>
-              <div className="mt-4">
-                <Button
-                  className="inline-flex items-center gap-2 rounded-md bg-gray-700 py-1.5 px-3 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-gray-600 data-[focus]:outline-1 data-[focus]:outline-white data-[open]:bg-gray-700"
-                  onClick={close}
-                >
-                  Ок
-                </Button>
-              </div>
-            </DialogPanel>
-          </div>
-        </div>
-      </Dialog>
       <div className="flex flex-col h-full w-full items-center justify-center p-4">
         <div className="w-full max-w-md space-y-2 p-4">
           <div className='flex flex-col w-full items-center'>
@@ -104,9 +80,11 @@ export default function Page() {
           Вход в панель управления
         </h2> */}
             <Image
-              src="/Icon-Integral-256x.png"
-              width={448}
-              height={448}
+              src={pic}
+              width={640}
+              height={751}
+
+              priority
               alt="Integral logo"
             />
           </div>
@@ -151,6 +129,32 @@ export default function Page() {
           />
         </form>
       </div>
+      <Dialog open={isOpen} as="div" className="relative z-10 focus:outline-none" onClose={close}>
+        <DialogBackdrop className="fixed inset-0 bg-black/30" />
+          <div className="fixed inset-0 z-10 w-screen">
+            <div className="flex min-h-full items-center justify-center p-4">
+              <DialogPanel
+                transition
+                className="max-w-md rounded-xl bg-white/5 p-6 backdrop-blur-2xl duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0"
+              >
+                <DialogTitle as="h3" className="text-base/7 font-medium text-white">
+                  Неверные данные авторизации
+                </DialogTitle>
+                <p className="mt-2 text-sm/6 text-white/50">
+                  Пароль и/или логин неправильны.
+                </p>
+                <div className="mt-4">
+                  <Button
+                    className="inline-flex items-center gap-2 rounded-md bg-gray-700 py-1.5 px-3 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-gray-600 data-[focus]:outline-1 data-[focus]:outline-white data-[open]:bg-gray-700"
+                    onClick={close}
+                  >
+                    Ок
+                  </Button>
+                </div>
+              </DialogPanel>
+            </div>
+          </div>
+        </Dialog>
     </div>
   );
 }

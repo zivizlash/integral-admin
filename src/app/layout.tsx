@@ -12,11 +12,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="bg-main">
+    <html lang="en" className="">
       <body className={`${inter.className} antialised`}>
-        <Providers>
-          {children}
-        </Providers>
+        <div className="container min-h-screen mx-auto max-w-screen-md">
+          <Providers>
+            {children}
+          </Providers>
+        </div>
       </body>
     </html>
   );
