@@ -10,7 +10,6 @@ import clsx from "clsx";
 import Link from "next/link";
 import AuthLoading from "@/app/components/auth-loading";
 
-
 import { Description, Field, Fieldset, Input, Label, Legend, Listbox, ListboxButton, ListboxOption, ListboxOptions, Select, Tab, TabGroup, TabList, TabPanel, TabPanels, Textarea } from '@headlessui/react'
 import { useParams, useRouter } from "next/navigation";
 
@@ -30,13 +29,11 @@ type UserCategories = {
   restrictedWrite: number[]
 };
 
-const people = [
-  { id: 1, name: 'Tom Cook' },
-  { id: 2, name: 'Wade Cooper' },
-  { id: 3, name: 'Tanya Fox' },
-  { id: 4, name: 'Arlene Mccoy' },
-  { id: 5, name: 'Devon Webb' },
-]
+const rolesList = [
+  { id: 1, name: 'Права на чтение' },
+  { id: 2, name: 'Права на изменение' },
+  { id: 3, name: 'Администратор' }
+];
 
 export default function UserDetailed() {
   const params = useParams();
@@ -44,7 +41,7 @@ export default function UserDetailed() {
   const [user, setUser] = useState<User>();
   const [paths, setPaths] = useState<UserPaths>();
   const [categories, setCategories] = useState<UserCategories>();
-  const [selected, setSelected] = useState(people[1])
+  const [selected, setSelected] = useState(rolesList[1]);
 
   useEffect(() => {
     axios.get(ADMIN_GETUSER(userId))
@@ -69,24 +66,24 @@ export default function UserDetailed() {
     return (
       <div className="w-full max-w-lg px-4">
         <Fieldset className="space-y-6 rounded-xl bg-white/5 p-6 sm:p-10">
-          <Legend className="text-base/7 font-semibold text-white">Shipping details</Legend>
+          <Legend className="text-base/7 font-semibold text-white">Пользователь {user?.login}</Legend>
           <Field>
-            <Label className="text-sm/6 font-medium text-white">Street address</Label>
-            <Input
-              className={clsx(
-                'mt-3 block w-full rounded-lg border-none bg-white/5 py-1.5 px-3 text-sm/6 text-white',
-                'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25'
-              )}
+            <Label className="text-sm/6 font-medium text-white">Пользователь</Label>
+            <Input className='mt-3 block w-full rounded-lg border-none 
+              bg-white/5 py-1.5 px-3 text-sm/6 text-white focus:outline-none 
+              data-[focus]:outline-2 data-[focus]:-outline-offset-2 
+              data-[focus]:outline-white/25'
             />
           </Field>
           <Field>
-            <Label className="text-sm/6 font-medium text-white">Country</Label>
-            <Description className="text-sm/6 text-white/50">We currently only ship to North America.</Description>
+            <Label className="text-sm/6 font-medium text-white">Права в системе</Label>
             <Listbox value={selected} onChange={setSelected}>
               <ListboxButton
                 className={clsx(
-                  'relative block w-full rounded-lg bg-white/5 py-1.5 pr-8 pl-3 text-left text-sm/6 text-white',
-                  'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25'
+                  'relative block w-full rounded-lg bg-white/5 py-1.5 pr-8', 
+                  'pl-3 text-left text-sm/6 text-white',
+                  'focus:outline-none data-[focus]:outline-2',
+                  'data-[focus]:-outline-offset-2 data-[focus]:outline-white/25'
                 )}
               >
                 {selected.name}
@@ -103,20 +100,21 @@ export default function UserDetailed() {
                   'transition duration-100 ease-in data-[leave]:data-[closed]:opacity-0'
                 )}
               >
-                {people.map((person) => (
+                {rolesList.map((person) => (
                   <ListboxOption
                     key={person.name}
                     value={person}
-                    className="group flex cursor-default items-center gap-2 rounded-lg py-1.5 px-3 select-none data-[focus]:bg-white/10"
+                    className="group flex cursor-default items-center gap-2 rounded-lg 
+                    py-1.5 px-3 select-none bg-gray-700 data-[focus]:bg-white/75 data-[focus]:text-black"
                   >
                     <CheckIcon className="invisible size-4 fill-white group-data-[selected]:visible" />
-                    <div className="text-sm/6 text-white">{person.name}</div>
+                    <div className="text-sm/6 data-[focus]:text-black">{person.name}</div>
                   </ListboxOption>
                 ))}
               </ListboxOptions>
             </Listbox>
           </Field>
-          <Field>
+          {/* <Field>
             <Label className="text-sm/6 font-medium text-white">Delivery notes</Label>
             <Description className="text-sm/6 text-white/50">
               If you have a tiger, we'd like to know about it.
@@ -128,7 +126,7 @@ export default function UserDetailed() {
               )}
               rows={3}
             />
-          </Field>
+          </Field> */}
         </Fieldset>
       </div>
     );
