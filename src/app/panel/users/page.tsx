@@ -9,28 +9,7 @@ import { UserPlusIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import Link from "next/link";
 import AuthLoading from "@/app/components/auth-loading";
-
-const formatRole = (role: number) => {
-  switch (role) {
-    case 0:
-      return "Доступ на чтение";
-    case 1:
-      return "Доступ на изменение"
-    case 2:
-      return "Администратор";
-  }
-}
-
-const formatDate = (dt: Date) => {
-  return dt.toLocaleDateString('ru-RU', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric'
-  }).split(' ')
-    .map(v => v.replaceAll('.', ''))
-    .join(' ')
-    .replace(' г', '');
-}
+import { formatDate, formatRole } from "@/logic/tools/formatters";
 
 export default function Page() {
   const [users, setUsers] = useState<User[]>([]);
@@ -40,9 +19,7 @@ export default function Page() {
       .then(res => {
         setUsers(res.data.value.map((user: User) => {
           return {
-            id: user.id,
-            login: user.login,
-            role: user.role,
+            ...user,
             createdAt: new Date(user.createdAt),
             updatedAt: new Date(user.updatedAt)
           };
