@@ -4,7 +4,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./components/providers";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["cyrillic", "latin"] });
 
 export default function RootLayout({
   children,
@@ -14,7 +14,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="">
       <body className={`${inter.className} antialised`}>
-        <div className="container min-h-screen mx-auto max-w-screen-md">
+        <div className="container min-h-screen mx-auto max-w-screen-lg">
           <Providers>
             {children}
           </Providers>

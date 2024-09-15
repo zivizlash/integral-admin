@@ -36,4 +36,5 @@ export function updateAuthData(access: string, refresh: string) {
   setStorageTokens(access, refresh);
 }
 
+export const axiosInstance = instance;
 export default instance;
