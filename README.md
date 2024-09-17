@@ -2,12 +2,6 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-```bash
-docker build -t nextjs-docker .
-docker run -p 3000:3000 -e NEXT_PUBLIC_API_PATH=http://192.168.0.14/api nextjs-docker
-```
-
-Set NEXT_PUBLIC_API_PATH
 First, run the development server:
 
 ```bash
@@ -23,6 +17,20 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+
+## Docker
+
+Create docker image: 
+
+```bash
+docker build -t nextjs-docker .
+```
+
+Start docker container: 
+
+```bash
+docker run -p 3000:3000 -e NEXT_PUBLIC_API_PATH=http://192.168.0.14/api nextjs-docker
+```
 
 ## Learn More
 
