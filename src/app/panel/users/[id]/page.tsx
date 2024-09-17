@@ -1,6 +1,6 @@
 "use client";
 import { userAtom } from "@/logic/api/atoms";
-import { ADMIN_GET_CATEGORIES, ADMIN_GET_PATHS, ADMIN_GETUSER, ADMIN_GETUSERS, ADMIN_UPDATE_CATEGORIES, ADMIN_UPDATE_PATH, ADMIN_UPDATEUSER, CATEGORIES_GET, PATH_BROWSE } from "@/logic/api/endpoints";
+import { ADMIN_DELETEUSER, ADMIN_GET_CATEGORIES, ADMIN_GET_PATHS, ADMIN_GETUSER, ADMIN_GETUSERS, ADMIN_UPDATE_CATEGORIES, ADMIN_UPDATE_PATH, ADMIN_UPDATEUSER, CATEGORIES_GET, PATH_BROWSE } from "@/logic/api/endpoints";
 import axios, { axiosInstance } from "@/logic/api/api";
 import React, { useEffect, useState } from "react";
 import { User } from "@/logic/models/definition";
@@ -84,6 +84,7 @@ const removeLastFolder = (input: string) => {
 };
 
 export default function UserDetailed() {
+  const router = useRouter();
   const params = useParams();
   const userId: number = +params.id;
   const [user, setUser] = useState<User>();
@@ -247,6 +248,13 @@ export default function UserDetailed() {
 
   const close = () => {
     setUpdateStatus("none");
+  };
+
+  const removeUser = () => {
+    axios.delete(ADMIN_DELETEUSER(user!.id))
+      .then(() => {
+        router.push("/panel/users");
+      });
   };
 
   const removePath = (path: string) => {
@@ -531,6 +539,12 @@ export default function UserDetailed() {
             'mt-3 focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25'
           )} disabled={updateStatus !== "none"}>
             Обновить
+          </Button>
+          <Button onClick={removeUser} className={clsx(
+            'text-center block w-full rounded-lg border-2 border-rose-950 hover:bg-rose-900 hover:border-rose-900 hover:bg-white/5 py-1.5 px-3 text-sm/6 text-white',
+            'mt-3 focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25'
+          )}>
+            Удалить пользователя
           </Button>
           {/* <Field>
             <Label className="text-sm/6 font-medium text-white">Delivery notes</Label>

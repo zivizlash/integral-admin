@@ -4,8 +4,9 @@ import {
   getAccessToken, getRefreshToken,
   setStorageTokens, isRefreshTokenAlreadyAccessed
 } from "@/logic/state/tokenHelper";
+import { API_BASE_URL } from "./env-vars";
 
-axios.defaults.baseURL = "http://127.0.0.1:80/api";
+axios.defaults.baseURL = API_BASE_URL;
 
 const instance = axios.create({
   headers: {

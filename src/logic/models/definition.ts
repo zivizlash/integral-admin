@@ -19,10 +19,17 @@ export type EntityChangeItem = {
 };
 
 export type EntityChange = {
+  id: number
   createdAt: Date,
-  createdBy: number,
+  createdById: number,
   entityId: number,
   changes: EntityChangeItem[]
+};
+
+export type EntityChangeTypeDto = {
+  change: EntityChange,
+  entityType: string,
+  day: Date
 };
 
 export type EntityChangeType = {
