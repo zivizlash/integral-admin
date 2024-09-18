@@ -7,7 +7,7 @@ import { Providers } from "./components/providers";
 const inter = Inter({ subsets: ["cyrillic", "latin"] });
 
 export default function RootLayout({
-  children,
+  children
 }: Readonly<{
   children: React.ReactNode;
 }>) {
