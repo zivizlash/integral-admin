@@ -5,7 +5,7 @@ import {
 } from "@/logic/state/tokenHelper";
 import { staticApiBase } from "../store/userStore";
 
-axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_PATH;
+axios.defaults.baseURL = "http://localhost/api";
 
 const instance = axios.create({
   headers: {

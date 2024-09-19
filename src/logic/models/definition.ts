@@ -36,3 +36,34 @@ export type EntityChangeType = {
   change: EntityChange,
   entityType: string
 };
+
+export type AccessMode = 0 | 1 | 2;
+
+export type UserRole = 0 | 1 | 2;
+
+export type UpdateStatus = "none" | "progress" | "success" | "fail";
+
+export type UserPathItem = {
+  categoryId: number,
+  accessMode: AccessMode
+};
+
+export type UserPaths = {
+  allowedPaths: string[]
+};
+
+export type DocumentEntry = {
+  path: string,
+  name: string,
+  isDirectory: boolean
+};
+
+export type UserCategories = {
+  restrictedRead: number[],
+  restrictedWrite: number[]
+};
+
+export type CategoryInfo = {
+  id: number,
+  name: string | null
+};

@@ -1,87 +1,18 @@
 "use client";
-import { userAtom } from "@/logic/api/atoms";
-import { ADMIN_DELETEUSER, ADMIN_GET_CATEGORIES, ADMIN_GET_PATHS, ADMIN_GETUSER, ADMIN_GETUSERS, ADMIN_UPDATE_CATEGORIES, ADMIN_UPDATE_PATH, ADMIN_UPDATEUSER, CATEGORIES_GET, PATH_BROWSE } from "@/logic/api/endpoints";
-import axios, { axiosInstance } from "@/logic/api/api";
-import React, { useEffect, useState } from "react";
-import { User } from "@/logic/models/definition";
-import Loading from "@/app/components/loading";
-import { CheckIcon, ChevronDownIcon, UserPlusIcon, XMarkIcon } from "@heroicons/react/24/solid";
+import { ADMIN_DELETEUSER, ADMIN_GET_CATEGORIES, ADMIN_GET_PATHS, ADMIN_GETUSER, ADMIN_UPDATE_CATEGORIES, ADMIN_UPDATE_PATH, ADMIN_UPDATEUSER, CATEGORIES_GET, PATH_BROWSE } from "@/logic/api/endpoints";
+import axios from "@/logic/api/api";
+import { useEffect, useState } from "react";
+import { CategoryInfo, DocumentEntry, UpdateStatus, User, UserCategories, UserPaths, UserRole } from "@/logic/models/definition";
+import { CheckIcon, ChevronDownIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import clsx from "clsx";
-import Link from "next/link";
 import AuthLoading from "@/app/components/auth-loading";
 
-
-import { Button, Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions, Description, Dialog, DialogBackdrop, DialogPanel, DialogTitle, Field, Fieldset, Input, Label, Legend, Listbox, ListboxButton, ListboxOption, ListboxOptions, ListboxSelectedOption, Select, Tab, TabGroup, TabList, TabPanel, TabPanels, Textarea } from '@headlessui/react'
+import { Button, Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions, Description, Dialog, DialogBackdrop, DialogPanel, DialogTitle, Field, Fieldset, Input, Label, Listbox, ListboxButton, ListboxOption, ListboxOptions, Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react';
 import { useParams, useRouter } from "next/navigation";
 import { normalizeRepeatedSlashes } from "next/dist/shared/lib/utils";
-
-type AccessMode = 0 | 1 | 2;
-
-type UserRole = 0 | 1 | 2;
-
-type UpdateStatus = "none" | "progress" | "success" | "fail";
+import { selectRoleColor, formatRole } from "@/logic/tools/formatters";
 
 const availableRoles: UserRole[] = [0, 1, 2];
-
-const formatRole = (role: number) => {
-  switch (role) {
-    case 0:
-      return "Доступ на чтение";
-    case 1:
-      return "Доступ на изменение"
-    case 2:
-      return "Администратор";
-  }
-};
-
-type UserPathItem = {
-  categoryId: number,
-  accessMode: AccessMode
-};
-
-type UserPaths = {
-  allowedPaths: string[]
-};
-
-type DocumentEntry = {
-  path: string,
-  name: string,
-  isDirectory: boolean
-};
-
-type UserCategories = {
-  restrictedRead: number[],
-  restrictedWrite: number[]
-};
-
-type CategoryInfo = {
-  id: number,
-  name: string | null
-};
-
-const selectRoleColor = (role: number) => {
-  switch (role) {
-    case 0:
-      return "text-green-500/75";
-    case 1:
-      return "text-amber-500/75"
-    case 2:
-      return "text-rose-500/75";
-    default:
-      return "";
-  }
-};
-
-const normalizeLastSlash = (input: string): string => {
-  return (input.endsWith("/") || input.endsWith("\\"))
-    ? normalizeLastSlash(input.substring(0, input.length - 1))
-    : input;
-}
-
-const removeLastFolder = (input: string) => {
-  const splitted = (input ?? "").split("/").flatMap(s => s.split("\\"));
-  return splitted.slice(0, splitted.length - 1).join('/');
-};
 
 export default function UserDetailed() {
   const router = useRouter();
@@ -218,7 +149,6 @@ export default function UserDetailed() {
       updates[index] = true;
       if (updates.reduce((prev, curr) => prev && curr)) {
         setUpdateStatus("success");
-        // setCategoriesUpdate(getAvailableCategories(categoriesUpdate) ?? []);
       }
     };
 
@@ -228,7 +158,7 @@ export default function UserDetailed() {
     }).then(() => {
       setUpdate(0);
     });
-    
+
     axios.put(ADMIN_UPDATE_CATEGORIES(user!.id), {
       items: categoriesUpdate.map(c => {
         return {
@@ -373,7 +303,7 @@ export default function UserDetailed() {
               <div className="pt-1">
                 <div className="flex flex-row justify-center items-center">
                   <div className="grow pr-2">
-                    <Combobox immediate value={pathQuery} 
+                    <Combobox immediate value={pathQuery}
                       onChange={(value: string) => setPathQuery(value)}
                       onClose={() => setIsPathFocused(false)}>
                       <div className="relative">
@@ -465,10 +395,10 @@ export default function UserDetailed() {
             </Field>
             <Field>
               <div className="pt-1">
-                <Combobox immediate value={categoriesQuery} 
+                <Combobox immediate value={categoriesQuery}
                   onChange={(query) => setCategoriesQuery(query)}
                   onClose={() => { setCategoriesQuery(""); setIsCategoriesFocused(false); }}>
-                  <div className="relative"> 
+                  <div className="relative">
                     <ComboboxInput
                       className={clsx(
                         "w-full rounded-lg border-none bg-white/5 py-1.5 pr-8 pl-3 text-sm/6 text-white",
