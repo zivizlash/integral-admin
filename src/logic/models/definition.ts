@@ -11,11 +11,17 @@ export type JwtTokens = {
   refresh: string
 };
 
+export type EntityDataType = 
+  0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+
+export type EntityOperationType = 0 | 1 | 2;
+
 export type EntityChangeItem = {
   property: string,
   oldValue: string,
   newValue: string,
-  type: 0 | 1 | 2
+  type: EntityDataType,
+  operation: EntityOperationType
 };
 
 export type EntityChange = {
