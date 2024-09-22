@@ -158,8 +158,8 @@ export default function Page() {
 
           return {
             categoryId,
-            oldValue: oldChange!.value,
-            newValue: newChange!.value
+            oldValue: oldChange?.value ?? "",
+            newValue: newChange?.value ?? ""
           };
         }
       );
