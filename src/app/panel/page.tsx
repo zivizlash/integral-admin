@@ -1,6 +1,6 @@
 "use client";
 
-import _, { toInteger } from "lodash";
+import _ from "lodash";
 import { useEffect, useState } from "react";
 import axios from "@/logic/api/api";
 import { ADMIN_GETUSERS, CATEGORIES_GET, CHANGES_QUERY, THINGS_GET } from "@/logic/api/endpoints";
@@ -136,55 +136,64 @@ export default function Page() {
     return <span className={output ? "text-green-700/90" : "text-rose-700/90"}> {changeValue} </span>;
   }
 
-  const isComplexArrayChange = (change: EntityChangeItem) => {
-    return change.type == 9;
-  };
-
   const groupAndFormatComplexChanges = (changeInfo: EntityChangeTypeDto) => {
-    const changes = changeInfo.change.changes;
-    const [categories, other] = _.partition(changes, c => c.type == 9);
+    const [categoriesChanges, otherChanges] = _.partition(
+      changeInfo.change.changes, c => c.type == 9);
 
-    const processed = categories.map(c => {
+    const processed = categoriesChanges.map(c => {
       const parsed = JSON.parse(c.newValue || c.oldValue);
       const categoryId: number = parsed.categoryId;
       const value: string = parsed.value;
-      const isAdded = c.operation == 1;
-
-      return ({ categoryId, value, isNewValue: isAdded });
+      const isAdded = c.operation === 1;
+      return { categoryId, value, isNewValue: isAdded };
     });
 
     const categoriesChange = Object.entries(
       _.groupBy(processed, c => c.categoryId)).map(
-      ([categoryId, categories]) => {
-        const [oldChange, newChange] = [
-          categories.find(c => !c.isNewValue),
-          categories.find(c => c.isNewValue)
-        ];
+        ([categoryId, categories]) => {
+          const [oldChange, newChange] = [
+            categories.find(c => !c.isNewValue),
+            categories.find(c => c.isNewValue)
+          ];
 
-        return { 
-          categoryId, 
-          from: oldChange!.value, 
-          to: newChange!.value 
-        };
-      });
+          return {
+            categoryId,
+            oldValue: oldChange!.value,
+            newValue: newChange!.value
+          };
+        }
+      );
+
+    const elements = categoriesChange.map(change => {
+      return (<div key={`categories-${change.categoryId}${change.oldValue}${change.newValue}`}>
+        <span className="text-white/80">
+          Значение категории 
+          <span className="text-white"> {(categories![change.categoryId])} </span>
+          изменено с {formatChangeValue(change.oldValue, false)} на
+          {formatChangeValue(change.newValue, true)}
+        </span>
+      </div>);
+    });
+
+    return elements.concat(otherChanges.map(formatChange));
   };
 
-  const formatChange = (change: EntityChangeItem, changeInfo: EntityChangeTypeDto) => {
+  const formatChange = (change: EntityChangeItem) => {
     switch (change.operation) {
       case 1: // added
-        return (<div>
+        return (<div key={`${change.property}${change.oldValue}${change.newValue}`}>
           <span className="text-white/80">
             {formatPropertyName(change.property)} добавлено значение
           </span> {formatChangeValue(change.newValue, true)}
         </div>);
       case 2: // removed
-        return (<div>
+        return (<div key={`${change.property}${change.oldValue}${change.newValue}`}>
           <span className="text-white/80">
             {formatPropertyName(change.property)} удалено значение
           </span> {formatChangeValue(change.oldValue, false)}
         </div>);
       default: // static 
-        return (<div>
+        return (<div key={`${change.property}${change.oldValue}${change.newValue}`}>
           <span className="text-white/80">
             {formatPropertyName(change.property)}
           </span> с {formatChangeValue(change.oldValue, false)} на {formatChangeValue(change.newValue, true)}
@@ -253,13 +262,7 @@ export default function Page() {
                     </DisclosureButton>
                     <DisclosurePanel className="mt-2 text-sm/5 text-white/50">
                       <div className="">
-                        {changeInfo.change.changes.map(change => {
-                          return (
-                            <p key={`${change.property}${change.oldValue}${change.newValue}${changeInfo.entityType}${changeInfo.change.id}`}>
-                              {formatChange(change, changeInfo)}
-                            </p>
-                          )
-                        })}
+                        {groupAndFormatComplexChanges(changeInfo)}
                       </div>
                     </DisclosurePanel>
                   </Disclosure>
