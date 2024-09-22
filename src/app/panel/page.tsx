@@ -1,15 +1,27 @@
 "use client";
 
+import _, { toInteger } from "lodash";
 import { useEffect, useState } from "react";
 import axios from "@/logic/api/api";
 import { ADMIN_GETUSERS, CATEGORIES_GET, CHANGES_QUERY, THINGS_GET } from "@/logic/api/endpoints";
-import { EntityChangeType, EntityChangeTypeDto, User } from "@/logic/models/definition";
-import { CalendarDaysIcon, ChevronDownIcon, ClockIcon, ListBulletIcon, TagIcon, TicketIcon, UserIcon } from "@heroicons/react/24/solid";
+import { EntityChangeItem, EntityChangeType, EntityChangeTypeDto, User } from "@/logic/models/definition";
+import { ChevronDownIcon, ClockIcon, ListBulletIcon, TagIcon, TicketIcon, UserIcon } from "@heroicons/react/24/solid";
 import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react";
-import { formatDate } from "@/logic/tools/formatters";
 import clsx from "clsx";
 
 type IdToName = { [k: string]: string };
+
+const formatChangeType = (changeType: number, oldValue: string, newValue: string) => {
+  switch (changeType) {
+    case 1:
+      return `Добавлен элемент ${newValue}`;
+    case 2:
+      return `Удален элемент ${oldValue}`;
+    case 0:
+    default:
+      return `Изменено с ${oldValue} на ${newValue}`;
+  }
+};
 
 const formatPropertyName = (propertyName: string) => {
   switch (propertyName) {
@@ -50,17 +62,6 @@ const formatEntityType = (entityType: string) => {
       return entityType;
   }
 };
-
-const groupBy = (items: any[], key: any) => items.reduce(
-  (result: any, item: any) => ({
-    ...result,
-    [item[key]]: [
-      ...(result[item[key]] || []),
-      item,
-    ],
-  }),
-  {},
-);
 
 export default function Page() {
   const [changes, setChanges] = useState<EntityChangeTypeDto[]>();
@@ -135,6 +136,62 @@ export default function Page() {
     return <span className={output ? "text-green-700/90" : "text-rose-700/90"}> {changeValue} </span>;
   }
 
+  const isComplexArrayChange = (change: EntityChangeItem) => {
+    return change.type == 9;
+  };
+
+  const groupAndFormatComplexChanges = (changeInfo: EntityChangeTypeDto) => {
+    const changes = changeInfo.change.changes;
+    const [categories, other] = _.partition(changes, c => c.type == 9);
+
+    const processed = categories.map(c => {
+      const parsed = JSON.parse(c.newValue || c.oldValue);
+      const categoryId: number = parsed.categoryId;
+      const value: string = parsed.value;
+      const isAdded = c.operation == 1;
+
+      return ({ categoryId, value, isNewValue: isAdded });
+    });
+
+    const categoriesChange = Object.entries(
+      _.groupBy(processed, c => c.categoryId)).map(
+      ([categoryId, categories]) => {
+        const [oldChange, newChange] = [
+          categories.find(c => !c.isNewValue),
+          categories.find(c => c.isNewValue)
+        ];
+
+        return { 
+          categoryId, 
+          from: oldChange!.value, 
+          to: newChange!.value 
+        };
+      });
+  };
+
+  const formatChange = (change: EntityChangeItem, changeInfo: EntityChangeTypeDto) => {
+    switch (change.operation) {
+      case 1: // added
+        return (<div>
+          <span className="text-white/80">
+            {formatPropertyName(change.property)} добавлено значение
+          </span> {formatChangeValue(change.newValue, true)}
+        </div>);
+      case 2: // removed
+        return (<div>
+          <span className="text-white/80">
+            {formatPropertyName(change.property)} удалено значение
+          </span> {formatChangeValue(change.oldValue, false)}
+        </div>);
+      default: // static 
+        return (<div>
+          <span className="text-white/80">
+            {formatPropertyName(change.property)}
+          </span> с {formatChangeValue(change.oldValue, false)} на {formatChangeValue(change.newValue, true)}
+        </div>);
+    }
+  };
+
   return (<div className="flex w-full h-full justify-between">
     <div className="w-full p-4">
       {!canRender
@@ -199,9 +256,7 @@ export default function Page() {
                         {changeInfo.change.changes.map(change => {
                           return (
                             <p key={`${change.property}${change.oldValue}${change.newValue}${changeInfo.entityType}${changeInfo.change.id}`}>
-                              <span className="text-white/80">
-                                {formatPropertyName(change.property)}
-                              </span> с {formatChangeValue(change.oldValue, false)} на {formatChangeValue(change.newValue, true)}
+                              {formatChange(change, changeInfo)}
                             </p>
                           )
                         })}
