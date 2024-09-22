@@ -10,8 +10,7 @@ axios.defaults.baseURL = "http://localhost/api";
 const instance = axios.create({
   headers: {
     "Accept": "application/json",
-    "Content-Type": "application/json; charset=UTF-8",
-    // "Authorization": `Bearer ${getAccessToken()}`
+    "Content-Type": "application/json; charset=UTF-8"
   }
 });
 

@@ -6,7 +6,6 @@ export default function Loading() {
         dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto lg:rounded-xl lg:border lg:bg-gray-200 
         lg:p-4 lg:dark:bg-zinc-800/30">
         Загрузка...
-        {/* <code className="font-mono font-bold">src/app/page.tsx</code> */}
       </p>
     </div>
   )
