@@ -1,0 +1,8 @@
+services:
+  admin-panel:
+    build: 
+      context: .
+      args:
+        BACKEND_API_PATH: http://192.168.0.14/api
+    ports: 
+      - "7002:3000"
