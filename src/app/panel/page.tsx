@@ -140,40 +140,68 @@ export default function Page() {
     const [categoriesChanges, otherChanges] = _.partition(
       changeInfo.change.changes, c => c.type == 9);
 
-    const processed = categoriesChanges.map(c => {
-      const parsed = JSON.parse(c.newValue || c.oldValue);
-      const categoryId: number = parsed.categoryId;
-      const value: string = parsed.value;
-      const isAdded = c.operation === 1;
-      return { categoryId, value, isNewValue: isAdded };
-    });
+    let elements: JSX.Element[] = [];
 
-    const categoriesChange = Object.entries(
-      _.groupBy(processed, c => c.categoryId)).map(
-        ([categoryId, categories]) => {
-          const [oldChange, newChange] = [
-            categories.find(c => !c.isNewValue),
-            categories.find(c => c.isNewValue)
-          ];
+    try {
+      const processed = categoriesChanges.map(c => {
+        const change = JSON.parse(c.newValue || c.oldValue);
+        const isAdded = c.operation === 1;
+        const categoryId: number = change.categoryId;
+        const value: string = change.value;
+        return { categoryId, value, isNewValue: isAdded };
+      });
 
-          return {
-            categoryId,
-            oldValue: oldChange?.value ?? "",
-            newValue: newChange?.value ?? ""
-          };
-        }
-      );
+      const categoriesChange = Object.entries(
+        _.groupBy(processed, c => c.categoryId)).map(
+          ([categoryId, categories]) => {
+            const [oldChange, newChange] = [
+              categories.find(c => !c.isNewValue),
+              categories.find(c => c.isNewValue)
+            ];
 
-    const elements = categoriesChange.map(change => {
-      return (<div key={`categories-${change.categoryId}${change.oldValue}${change.newValue}`}>
-        <span className="text-white/80">
-          Значение категории 
-          <span className="text-white"> {(categories![change.categoryId])} </span>
-          изменено с {formatChangeValue(change.oldValue, false)} на
-          {formatChangeValue(change.newValue, true)}
-        </span>
-      </div>);
-    });
+            return {
+              categoryId,
+              oldValue: oldChange?.value ?? "",
+              newValue: newChange?.value ?? "",
+              isAdded: oldChange == null,
+              isRemoved: newChange == null
+            };
+          }
+        );
+
+      elements = categoriesChange.map(change => {
+        if (change.isRemoved) {
+          return (<div key={`categories-${change.categoryId}${change.oldValue}${change.newValue}`}>
+            <span className="text-white/80">
+              Категория
+              <span className="text-white"> {(categories![change.categoryId])} </span>
+              со значением {formatChangeValue(change.oldValue, false)} удалена
+            </span>
+          </div>)
+        };
+
+        if (change.isAdded) {
+          return (<div key={`categories-${change.categoryId}${change.oldValue}${change.newValue}`}>
+            <span className="text-white/80">
+              Добавлена категория
+              <span className="text-white"> {(categories![change.categoryId])} </span>
+              со значением {formatChangeValue(change.newValue, true)}
+            </span>
+          </div>)
+        };
+
+        return (<div key={`categories-${change.categoryId}${change.oldValue}${change.newValue}`}>
+          <span className="text-white/80">
+            Значение категории
+            <span className="text-white"> {(categories![change.categoryId])} </span>
+            изменено с {formatChangeValue(change.oldValue, false)} на
+            {formatChangeValue(change.newValue, true)}
+          </span>
+        </div>);
+      });
+    }
+    catch {
+    }
 
     return elements.concat(otherChanges.map(formatChange));
   };
@@ -191,7 +219,7 @@ export default function Page() {
           <span className="text-white/80">
             {formatPropertyName(change.property)} удалено значение
           </span> {formatChangeValue(change.oldValue, false)}
-        </div>);
+        </div>); 
       default: // static 
         return (<div key={`${change.property}${change.oldValue}${change.newValue}`}>
           <span className="text-white/80">
