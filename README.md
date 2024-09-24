@@ -20,7 +20,10 @@ This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-opti
 
 ## Docker
 
-Create docker image: 
+Using composer: 
+```bash
+docker compose up
+```
 
 ```bash
 docker build -t nextjs-docker .

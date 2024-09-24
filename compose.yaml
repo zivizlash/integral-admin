@@ -3,6 +3,6 @@ services:
     build: 
       context: .
       args:
-        BACKEND_API_PATH: http://192.168.0.14/api
+        BACKEND_API_PATH: http://192.168.2.73:7001/api
     ports: 
       - "7002:3000"
