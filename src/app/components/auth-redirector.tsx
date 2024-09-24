@@ -61,6 +61,10 @@ export default function AuthRedirector({ children }: Readonly<{
     return children;
   }
 
+  if (pathname == "/") {
+    router.push("/panel");
+  }
+
   if (staticApiBase != null) {
     setFetchedApiBase(staticApiBase);
   }
