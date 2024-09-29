@@ -2,10 +2,12 @@ import { Dialog, DialogBackdrop, DialogPanel, DialogTitle, Button } from "@headl
 
 export const UpdateDialog = ({
   updateStatus,
-  close
+  close,
+  successMessage
 }: Readonly<{
   updateStatus: string,
-  close: () => void
+  close: () => void,
+  successMessage: string
 }>) => {
   return <Dialog open={updateStatus == "fail" || updateStatus == "success"} as="div"
     className="relative z-10 focus:outline-none" onClose={close}>
@@ -20,7 +22,7 @@ export const UpdateDialog = ({
             {updateStatus == "fail" ? "Произошла ошибка" : "Успешно"}
           </DialogTitle>
           <p className="mt-2 text-sm/6 text-white/50">
-            {updateStatus == "fail" ? "Повторите попытку позже" : "Пользователь обновлен"}
+            {updateStatus == "fail" ? "Повторите попытку позже" : successMessage}
           </p>
           <div className="mt-4">
             <Button

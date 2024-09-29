@@ -1,6 +1,6 @@
 import { CategoryInfo } from "@/logic/models/definition";
-import { Combobox, ComboboxInput, ComboboxButton, ComboboxOptions, ComboboxOption } from "@headlessui/react";
-import { ChevronDownIcon, CheckIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions } from "@headlessui/react";
+import { CheckIcon, ChevronDownIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import clsx from "clsx";
 import { useState } from "react";
 
@@ -19,12 +19,10 @@ export const CategoriesSelector = ({
   removeCategory: (category: CategoryInfo) => void,
   categoriesUpdate: CategoryInfo[]
 }>) => {
-  const [isCategoriesFocused, setIsCategoriesFocused] = useState(false);
- 
   return <div className="pt-1">
     <Combobox immediate value={categoriesQuery ?? ""}
       onChange={setCategoriesQuery}
-      onClose={() => { setCategoriesQuery(""); setIsCategoriesFocused(false); }}>
+      onClose={() => { setCategoriesQuery(""); }}>
       <div className="relative">
         <ComboboxInput
           className={clsx(
@@ -32,14 +30,8 @@ export const CategoriesSelector = ({
             "focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2",
             "data-[focus]:outline-white/25"
           )}
-          onFocus={() => setIsCategoriesFocused(true)}
+          placeholder="Выберите категорию для добавления"
           onChange={event => setCategoriesQuery(event.target.value)}
-          displayValue={() => {
-            if ((categoriesQuery ?? "" === "")) {
-              return "";
-            }
-            return isCategoriesFocused ? "" : "Добавить категорию";
-          }}
         />
         <ComboboxButton className="group absolute inset-y-0 right-0 px-2.5">
           <ChevronDownIcon className="size-4 fill-white/60 group-data-[hover]:fill-white" />

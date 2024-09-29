@@ -15,19 +15,6 @@ export const normalizeLastSlash = (input: string): string => {
     : input;
 };
 
-export const selectRoleColor = (role: number) => {
-  switch (role) {
-    case 0:
-      return "text-green-500/75";
-    case 1:
-      return "text-amber-500/75"
-    case 2:
-      return "text-rose-500/75";
-    default:
-      return "";
-  }
-};
-
 export const formatDate = (dt: Date) => {
   return dt.toLocaleDateString('ru-RU', {
     day: 'numeric',

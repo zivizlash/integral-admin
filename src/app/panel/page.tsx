@@ -8,60 +8,9 @@ import { EntityChangeItem, EntityChangeType, EntityChangeTypeDto, User } from "@
 import { ChevronDownIcon, ClockIcon, ListBulletIcon, TagIcon, TicketIcon, UserIcon } from "@heroicons/react/24/solid";
 import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react";
 import clsx from "clsx";
+import { getPropName, getPropType } from "@/logic/const/dict";
 
 type IdToName = { [k: string]: string };
-
-const formatChangeType = (changeType: number, oldValue: string, newValue: string) => {
-  switch (changeType) {
-    case 1:
-      return `Добавлен элемент ${newValue}`;
-    case 2:
-      return `Удален элемент ${oldValue}`;
-    case 0:
-    default:
-      return `Изменено с ${oldValue} на ${newValue}`;
-  }
-};
-
-const formatPropertyName = (propertyName: string) => {
-  switch (propertyName) {
-    case "name":
-      return "Наименование";
-    case "position":
-      return "Позиция";
-    case "rotation":
-      return "Поворот";
-    case "parentId":
-      return "Родительский объект";
-    case "categories":
-      return "Категории";
-    case "instanceId":
-      return "Трехмерная модель"
-    case "scale":
-      return "Масштаб";
-    case "color1":
-      return "Цвет объекта 1";
-    case "color2":
-      return "Цвет объекта 2";
-    case "categoryValueType":
-      return "Тип категории";
-    case "relations":
-      return "Дочерние категории";
-
-    default: return propertyName;
-  };
-};
-
-const formatEntityType = (entityType: string) => {
-  switch (entityType) {
-    case "Thing":
-      return "Объект";
-    case "Category":
-      return "Категория";
-    default:
-      return entityType;
-  }
-};
 
 export default function Page() {
   const [changes, setChanges] = useState<EntityChangeTypeDto[]>();
@@ -211,19 +160,19 @@ export default function Page() {
       case 1: // added
         return (<div key={`${change.property}${change.oldValue}${change.newValue}`}>
           <span className="text-white/80">
-            {formatPropertyName(change.property)} добавлено значение
+            {getPropName(change.property)} добавлено значение
           </span> {formatChangeValue(change.newValue, true)}
         </div>);
       case 2: // removed
         return (<div key={`${change.property}${change.oldValue}${change.newValue}`}>
           <span className="text-white/80">
-            {formatPropertyName(change.property)} удалено значение
+            {getPropName(change.property)} удалено значение
           </span> {formatChangeValue(change.oldValue, false)}
         </div>); 
       default: // static 
         return (<div key={`${change.property}${change.oldValue}${change.newValue}`}>
           <span className="text-white/80">
-            {formatPropertyName(change.property)}
+            {getPropName(change.property)}
           </span> с {formatChangeValue(change.oldValue, false)} на {formatChangeValue(change.newValue, true)}
         </div>);
     }
@@ -273,7 +222,7 @@ export default function Page() {
                             </li>
                             <li title="Изменяемый тип">
                               <TagIcon className="size-5 pr-1 mb-0.5 inline fill-white/60 group-data-[hover]:fill-white/50" />
-                              {formatEntityType(changeInfo.entityType)}
+                              {getPropType(changeInfo.entityType)}
                             </li>
                             <li title="Идентификатор изменяемой сущности">
                               <TicketIcon className="size-5 pr-1 mb-0.5 inline fill-white/60 group-data-[hover]:fill-white/50" />

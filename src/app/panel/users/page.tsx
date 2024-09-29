@@ -1,15 +1,12 @@
 "use client";
-import { userAtom } from "@/logic/api/atoms";
-import { ADMIN_GETUSERS } from "@/logic/api/endpoints";
+import AuthLoading from "@/app/components/auth-loading";
 import axios from "@/logic/api/api";
-import { useEffect, useState } from "react";
+import { ADMIN_GETUSERS } from "@/logic/api/endpoints";
 import { User } from "@/logic/models/definition";
-import Loading from "@/app/components/loading";
-import { UserPlusIcon } from "@heroicons/react/24/outline";
+import { formatDate, formatRole } from "@/logic/tools/formatters";
 import clsx from "clsx";
 import Link from "next/link";
-import AuthLoading from "@/app/components/auth-loading";
-import { formatDate, formatRole } from "@/logic/tools/formatters";
+import { useEffect, useState } from "react";
 
 export default function Page() {
   const [users, setUsers] = useState<User[]>([]);
@@ -35,23 +32,24 @@ export default function Page() {
       )}>
         Создать пользователя
       </Link>
-      <div className="mt-3 rounded-xl bg-white/5 p-3">
+      <div className="p-3">
         <ul>
           {users.length == 0
             ? <AuthLoading />
             : users.map((user) => (
-              <li key={user.id} className="relative rounded-md p-3 text-sm/6 transition hover:bg-white/5">
+              <li key={user.id} className="relative rounded-xl p-4 text-sm/6 transition hover:bg-white/5">
                 <Link href={`/panel/users/${user.id}`}
                   className="font-semibold text-white"
                 >
-                  <span className="absolute inset-0" />
+                  <span className="absolute inset-0"></span>
                   {user.login}
                 </Link>
-                <span className={clsx(
-                  'ml-1.5',
-                  user.role === 0 && 'text-green-500/50',
-                  user.role === 1 && 'text-amber-500/50',
-                  user.role === 2 && 'text-rose-500/50'
+                <span className={clsx({
+                  'ml-1.5': true,
+                  "text-green-500/50": user.role === 0, 
+                  "text-amber-500/50": user.role === 1, 
+                  "text-rose-500/50": user.role === 2 
+                }
                 )}>
                   {formatRole(user.role)}
                 </span>

@@ -1,7 +1,7 @@
 import { UserRole } from "@/logic/models/definition";
-import { selectRoleColor, formatRole } from "@/logic/tools/formatters";
-import { Listbox, ListboxButton, ListboxOptions, ListboxOption, Description, Label } from "@headlessui/react";
-import { ChevronDownIcon, CheckIcon } from "@heroicons/react/24/outline";
+import { formatRole } from "@/logic/tools/formatters";
+import { Description, Label, Listbox, ListboxButton, ListboxOption, ListboxOptions } from "@headlessui/react";
+import { CheckIcon, ChevronDownIcon } from "@heroicons/react/24/solid";
 import clsx from "clsx";
 
 const availableRoles: UserRole[] = [0, 1, 2];
@@ -24,7 +24,11 @@ export const RoleSelector = ({
           'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25'
         )}
       >
-        <div className={clsx(selectRoleColor(role))}>
+        <div className={clsx({
+          "text-green-500/75": role === 0,
+          "text-amber-500/75": role === 1,
+          "text-rose-500/75": role === 2
+        })}>
           {formatRole(role)}
         </div>
         <ChevronDownIcon
@@ -47,10 +51,12 @@ export const RoleSelector = ({
             className="group flex cursor-default items-center gap-2 rounded-lg py-1.5 px-3 select-none data-[focus]:bg-white/10"
           >
             <CheckIcon className="invisible size-4 fill-white group-data-[selected]:visible" />
-            <div className={clsx(
-              'ml-1.5 text-sm/6',
-              selectRoleColor(role)
-            )}>
+            <div className={clsx({
+              'ml-1.5 text-sm/6': true,
+              "text-green-500/75": role === 0,
+              "text-amber-500/75": role === 1,
+              "text-rose-500/75": role === 2
+            })}>
               {formatRole(role)}
             </div>
           </ListboxOption>

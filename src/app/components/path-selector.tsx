@@ -1,5 +1,5 @@
-import { Combobox, ComboboxInput, ComboboxButton, ComboboxOptions, ComboboxOption, Button } from "@headlessui/react";
-import { ChevronDownIcon, CheckIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { Button, Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions } from "@headlessui/react";
+import { CheckIcon, ChevronDownIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import clsx from "clsx";
 import { useState } from "react";
 
@@ -36,13 +36,7 @@ export const PathSelector = ({
                 "data-[focus]:outline-white/25"
               )}
               onFocus={() => setIsPathFocused(true)}
-              displayValue={(path: string) => {
-                if (path == null || path == "") {
-                  return isPathFocused ? "" : "Введите или выберите путь";
-                }
-
-                return path;
-              }}
+              placeholder="Введите или выберите путь"
               onChange={(event) => setPathQuery(event.target.value)}
             />
             <ComboboxButton className="group absolute inset-y-0 right-0 px-2.5">

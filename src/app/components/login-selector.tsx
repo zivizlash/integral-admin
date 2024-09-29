@@ -2,7 +2,8 @@ import { Label, Description, Input } from "@headlessui/react";
 import clsx from "clsx";
 
 export const LoginSelector = ({ login }: Readonly<{ login: string | undefined }>) => {
-  return <div> <Label className="text-sm/6 font-medium text-white">Пользователь</Label>
+  return <div>
+    <Label className="text-sm/6 font-medium text-white">Пользователь</Label>
     <Description className="text-sm/6 text-white/50">
       Пока не редактируется
     </Description>

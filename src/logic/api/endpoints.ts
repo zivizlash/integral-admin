@@ -11,5 +11,6 @@ export const CATEGORIES_GET = "categories";
 export const THINGS_GET = "things/workshop/1";
 export const ADMIN_UPDATE_PATH = (userId: number) => `admin/users/paths/${userId}`;
 export const ADMIN_UPDATE_CATEGORIES = (userId: number) => `admin/users/categories/${userId}`;
+export const ADMIN_RESET_PASSWORD = "admin/password";
 export const CHANGES_QUERY = (from: Date) => `changes?from=${from.toISOString()}`;
 export const ADMIN_DELETEUSER = (userId: number) => `admin/users/${userId}`;
