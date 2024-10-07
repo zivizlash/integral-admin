@@ -35,6 +35,7 @@ export const PasswordInput = ({ title, onChange }: Readonly<{
       {message}
     </Description>
     <Input
+      autoFocus
       value={password}
       onChange={e => setPassword(e.target.value)}
       placeholder="Пароль"

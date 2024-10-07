@@ -45,6 +45,11 @@ export function isRefreshTokenAlreadyAccessed(): boolean {
   return lastToken === refreshToken;
 }
 
+export function unsetStorageTokens() {
+  localStorage.removeItem(accessTokenKey);
+  localStorage.removeItem(refreshTokenKey);
+}
+
 export function setStorageTokens(access: string, refresh: string) {
   localStorage.setItem(accessTokenKey, access);
   localStorage.setItem(refreshTokenKey, refresh);

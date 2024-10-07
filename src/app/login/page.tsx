@@ -6,13 +6,26 @@ import axios from "@/logic/api/api";
 import { Field, Input, Button, Dialog, DialogPanel, DialogTitle, DialogBackdrop } from '@headlessui/react'
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { setStorageTokens } from "@/logic/state/tokenHelper";
+import { setStorageTokens, unsetStorageTokens } from "@/logic/state/tokenHelper";
 import { useAtom } from 'jotai';
 import { userAtom } from '@/logic/api/atoms';
 import { USERS_TOKEN, USERS_CURRENT } from '@/logic/api/endpoints';
 import { setStaticUser } from '@/logic/store/userStore';
-import { JwtTokens } from '@/logic/models/definition';
+import { JwtTokens, User, USER_ROLE_ADMIN } from '@/logic/models/definition';
 import pic from "@/../public/Icon-Integral-256x.png";
+
+type SystemMessage = { title: string, body: string };
+
+const errorMessages = [
+  { 
+    title: "Неверные данные авторизации", 
+    body: "Пароль и/или логин неправильны." 
+  },
+  { 
+    title: "Недостаточно прав", 
+    body: "Пользователь должен являться администратором"
+  }
+];
 
 export default function Page() {
   const [login, setLogin] = useState("");
@@ -21,6 +34,7 @@ export default function Page() {
   const [isUpdated, setIsUpdated] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useAtom(userAtom);
+  const [errorMessage, setErrorMessage] = useState<SystemMessage>(errorMessages[0]);
   const router = useRouter();
 
   useEffect(() => {
@@ -38,10 +52,17 @@ export default function Page() {
 
     axios.get(USERS_CURRENT)
       .then(res => {
-        const currentUser = res.data.value;
-        setStaticUser(currentUser);
-        setUser(currentUser);
-        setIsUpdated(true);
+        const currentUser: User = res.data.value;
+
+        if (currentUser.role !== USER_ROLE_ADMIN) {
+          setErrorMessage(errorMessages[1]);
+          setIsOpen(true);
+          unsetStorageTokens();
+        } else {
+          setStaticUser(currentUser);
+          setUser(currentUser);
+          setIsUpdated(true);
+        }
       });
   }, [jwtToken]);
 
@@ -65,6 +86,7 @@ export default function Page() {
 
         if (status === 401 || status === 404) {
           console.log("неверные данные авторизации");
+          setErrorMessage(errorMessages[0]);
           setIsOpen(true);
           setPassword("");
         }
@@ -76,9 +98,6 @@ export default function Page() {
       <div className="flex flex-col h-full w-full items-center justify-center p-4">
         <div className="w-full max-w-md space-y-2 p-4">
           <div className='flex flex-col w-full items-center'>
-            {/* <h2 className="text-2xl font-medium text-gray-300">
-          Вход в панель управления
-        </h2> */}
             <Image
               src={pic}
               width={640}
@@ -91,8 +110,6 @@ export default function Page() {
         </div>
         <form onSubmit={onSubmit} className="w-full max-w-md space-y-2 p-4 bg-white/5 rounded-xl">
           <Field>
-            {/* <Label className="text-sm/6 font-medium text-white">Логин</Label> */}
-            {/* <Description className="text-sm/6 text-white/50">Use your real name so people will recognize you.</Description> */}
             <Input autoFocus
               placeholder='Логин'
               value={login}
@@ -105,8 +122,6 @@ export default function Page() {
             />
           </Field>
           <Field className="">
-            {/* <Label className="text-sm/6 font-medium text-white">Пароль</Label> */}
-            {/* <Description className="text-sm/6 text-white/50">Use your real name so people will recognize you.</Description> */}
             <Input
               placeholder='Пароль'
               type="password"
@@ -138,10 +153,10 @@ export default function Page() {
                 className="max-w-md rounded-xl bg-white/5 p-6 backdrop-blur-2xl duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0"
               >
                 <DialogTitle as="h3" className="text-base/7 font-medium text-white">
-                  Неверные данные авторизации
+                  {errorMessage!.title}
                 </DialogTitle>
                 <p className="mt-2 text-sm/6 text-white/50">
-                  Пароль и/или логин неправильны.
+                  {errorMessage!.body}
                 </p>
                 <div className="mt-4">
                   <Button

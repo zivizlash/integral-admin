@@ -47,6 +47,10 @@ export type AccessMode = 0 | 1 | 2;
 
 export type UserRole = 0 | 1 | 2;
 
+export const USER_ROLE_READER = 0;
+export const USER_ROLE_EDITOR = 1;
+export const USER_ROLE_ADMIN = 2;
+
 export type UpdateStatus = "none" | "progress" | "success" | "fail";
 
 export type UserPathItem = {
