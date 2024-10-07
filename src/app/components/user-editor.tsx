@@ -11,7 +11,7 @@ import { LoginSelector } from "@/app/components/login-selector";
 import { PathSelector } from "@/app/components/path-selector";
 import { RoleSelector } from "@/app/components/role-selector";
 import { UpdateDialog } from "@/app/components/update-dialog";
-import { Button, Description, Field, Fieldset, Label } from '@headlessui/react';
+import { Button, Description, Field, Fieldset, Label, Input } from '@headlessui/react';
 import { normalizeRepeatedSlashes } from "next/dist/shared/lib/utils";
 
 export const UserEditor = ({ userId, onRemove }: Readonly<{
@@ -35,6 +35,9 @@ export const UserEditor = ({ userId, onRemove }: Readonly<{
   const [fetchedPath, setFetchedPath] = useState("");
   const [currentPathes, setCurrentPathes] = useState<string[] | null>([]);
 
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+
   const [pathQuery, setPathQuery] = useState("");
 
   useEffect(() => {
@@ -43,6 +46,8 @@ export const UserEditor = ({ userId, onRemove }: Readonly<{
         const user = res.data.value;
         setUser(user);
         setSelectedRole(user.role);
+        setFirstName(user.firstName ?? "");
+        setLastName(user.lastName ?? "");
       });
 
     axios.get(ADMIN_GET_PATHS(userId))
@@ -140,7 +145,9 @@ export const UserEditor = ({ userId, onRemove }: Readonly<{
 
     axios.put(ADMIN_UPDATEUSER, {
       userId: user?.id,
-      role: selectedRole
+      role: selectedRole,
+      firstName,
+      lastName
     }).then(() => {
       setUpdate(0);
     });
@@ -219,6 +226,36 @@ export const UserEditor = ({ userId, onRemove }: Readonly<{
     <Fieldset className="space-y-6 p-4 py-2">
       <Field>
         <LoginSelector login={user?.login} />
+      </Field>
+      <Field>
+        {/* <Description className="text-sm/6 text-white/50">
+          Имя пользователя
+        </Description> */}
+      <Label className="text-sm/6 font-medium text-white">Имя</Label>
+        <Input
+          type="text"
+          onChange={e => setFirstName(e.target.value ?? "")}
+          value={firstName}
+          className={clsx(
+            'mt-1 block w-full rounded-lg border-none bg-white/5 py-1.5 px-3 text-sm/6 text-white',
+            'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25'
+          )}
+        />
+      </Field>
+      <Field>
+        {/* <Description className="text-sm/6 text-white/50">
+          Фамилия пользователя
+        </Description> */}
+    <Label className="text-sm/6 font-medium text-white">Фамилия</Label>
+        <Input
+          type="text"
+          onChange={e => setLastName(e.target.value ?? "")}
+          value={lastName}
+          className={clsx(
+            'mt-1 block w-full rounded-lg border-none bg-white/5 py-1.5 px-3 text-sm/6 text-white',
+            'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25'
+          )}
+        />
       </Field>
       <Field>
         <RoleSelector role={selectedRole} setRole={setSelectedRole} />

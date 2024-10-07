@@ -1,6 +1,8 @@
 export type User = {
   id: number;
   login: string;
+  firstName: string | null;
+  lastName: string | null;
   role: number;
   createdAt: Date;
   updatedAt: Date;
