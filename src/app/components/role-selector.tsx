@@ -40,7 +40,7 @@ export const RoleSelector = ({
         anchor="bottom"
         transition
         className={clsx(
-          'w-[var(--button-width)] rounded-xl border-2 border-zinc-700 bg-white/5 p-1 [--anchor-gap:var(--spacing-1)] focus:outline-none backdrop-blur-md',
+          'w-[var(--button-width)] rounded-xl border border-white/5 bg-white/5 p-1 [--anchor-gap:var(--spacing-1)] focus:outline-none backdrop-blur-md',
           'transition duration-100 ease-in data-[leave]:data-[closed]:opacity-0'
         )}
       >

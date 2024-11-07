@@ -13,6 +13,7 @@ import { RoleSelector } from "@/app/components/role-selector";
 import { UpdateDialog } from "@/app/components/update-dialog";
 import { Button, Description, Field, Fieldset, Label, Input } from '@headlessui/react';
 import { normalizeRepeatedSlashes } from "next/dist/shared/lib/utils";
+import { EmailSelector } from "./email-selector";
 
 export const UserEditor = ({ userId, onRemove }: Readonly<{
   userId: number,
@@ -37,6 +38,7 @@ export const UserEditor = ({ userId, onRemove }: Readonly<{
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
 
   const [pathQuery, setPathQuery] = useState("");
 
@@ -48,6 +50,7 @@ export const UserEditor = ({ userId, onRemove }: Readonly<{
         setSelectedRole(user.role);
         setFirstName(user.firstName ?? "");
         setLastName(user.lastName ?? "");
+        setEmail(user.email ?? "");
       });
 
     axios.get(ADMIN_GET_PATHS(userId))
@@ -229,11 +232,12 @@ export const UserEditor = ({ userId, onRemove }: Readonly<{
       </Field>
       <Field>
         {/* <Description className="text-sm/6 text-white/50">
-          Имя пользователя
+          Необязательно поле
         </Description> */}
-      <Label className="text-sm/6 font-medium text-white">Имя</Label>
+        <Label className="text-sm/6 font-medium text-white">Имя</Label>
         <Input
           type="text"
+          placeholder="Не задано"
           onChange={e => setFirstName(e.target.value ?? "")}
           value={firstName}
           className={clsx(
@@ -244,11 +248,12 @@ export const UserEditor = ({ userId, onRemove }: Readonly<{
       </Field>
       <Field>
         {/* <Description className="text-sm/6 text-white/50">
-          Фамилия пользователя
+          Необязательно поле
         </Description> */}
-    <Label className="text-sm/6 font-medium text-white">Фамилия</Label>
+        <Label className="text-sm/6 font-medium text-white">Фамилия</Label>
         <Input
           type="text"
+          placeholder="Не задано"
           onChange={e => setLastName(e.target.value ?? "")}
           value={lastName}
           className={clsx(
@@ -256,6 +261,12 @@ export const UserEditor = ({ userId, onRemove }: Readonly<{
             'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25'
           )}
         />
+      </Field>
+      <Field>
+        <EmailSelector
+          setEmail={setEmail}
+          email={email}
+         />
       </Field>
       <Field>
         <RoleSelector role={selectedRole} setRole={setSelectedRole} />
