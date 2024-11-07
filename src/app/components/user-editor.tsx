@@ -150,7 +150,8 @@ export const UserEditor = ({ userId, onRemove }: Readonly<{
       userId: user?.id,
       role: selectedRole,
       firstName,
-      lastName
+      lastName,
+      email
     }).then(() => {
       setUpdate(0);
     });

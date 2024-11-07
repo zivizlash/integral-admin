@@ -13,6 +13,7 @@ export const EmailSelector = ({ email, setEmail }: Readonly<{
     <Input
       type="text"
       onChange={e => setEmail(e.target.value ?? "")}
+      placeholder="Не задано"
       value={email}
       className={clsx(
         'mt-1 block w-full rounded-lg border-none bg-white/5 py-1.5 px-3 text-sm/6 text-white',
